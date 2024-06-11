@@ -1,0 +1,10 @@
+runinng mysql server:
+  sudo docker run -d --name mysql \
+    -e MYSQL_USER=arthu \
+    -e MYSQL_PASSWORD=test \
+    -e MYSQL_ROOT_PASSWORD=test22 \
+    -e MYSQL_DATABASE=BDSI2AVD \
+    -v /home/metta/Desktop/college/LPWII/AVD2/mysql_data:/var/lib/mysql \
+    -p 3307:3306 mysql:latest
+
+    DATABASE_URL="mysql://root:test22@localhost:3307/mydb"

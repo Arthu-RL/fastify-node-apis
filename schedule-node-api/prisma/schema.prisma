@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Medic {
+  id       String     @id @default(uuid())
+  medic    String
+  crm      String
+  schedules Schedule[]
+
+  @@map("medics")
+}
+
+model Client {
+  id               String     @id @default(uuid())
+  name             String
+  cpf              String     @unique
+  cellphone_number String
+  schedules         Schedule[]
+
+  @@map("clients")
+}
+
+model Especiality {
+  id              String     @id @default(uuid())
+  cod_especiality String     @unique
+  especiality     String
+  schedules        Schedule[]
+
+  @@map("especialities")
+}
+
+model Schedule {
+  id            String   @id @default(uuid())
+  schedule_date DateTime @default(now())
+  consult_date  DateTime @default(now())
+
+  especiality   Especiality? @relation(fields: [especiality_id], references: [id], onDelete: Cascade)
+  especiality_id String
+
+  medic   Medic? @relation(fields: [medic_id], references: [id], onDelete: Cascade)
+  medic_id String
+
+  client   Client? @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  client_id String
+
+  @@map("schedules")
+}
