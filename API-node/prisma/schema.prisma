@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Prisma Schema
+
+model Client {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+  cpf   String @unique
+  city  String
+
+  salesOrder SalesOrder[]
+
+  @@map("clients")
+}
+
+model User {
+  id         String       @id @default(uuid())
+  email      String       @unique
+  name       String
+  cpf        String       @unique
+  city       String
+  player     Player?
+
+  @@map("users")
+}
+
+model Player {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("players")
+}
+
+model Product {
+  id           String       @id @default(uuid())
+  product_name String       @unique
+  grope_name   String
+  amount       Decimal
+  price_unit   Decimal
+  salesOrder   SalesOrder[]
+
+  @@map("products")
+}
+
+model SalesOrder {
+  id            String   @id @default(uuid())
+  date_of_issue DateTime @default(now())
+  amount        Int
+  unitary_value Decimal
+
+  client    Client?  @relation(fields: [clientId], references: [id])
+  clientId String?
+
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String?
+
+  @@map("salesorder")
+}
